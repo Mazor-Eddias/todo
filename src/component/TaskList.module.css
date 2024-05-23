@@ -1,0 +1,99 @@
+.container {
+    width: 46rem;
+    height: 17.938rem;
+    margin: 4rem auto;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+}
+
+.create{
+    color: var(--blue);
+    font-size: var(--size-14);
+    font-weight: bold;
+}
+
+.done {
+    color: var(--purple-dark);
+    font-size: var(--size-14);
+    font-weight: bold;
+}
+
+.count {
+    color: var(--gray-200);
+    background: var(--gray-400);
+    padding: 0.2rem  0.5rem;
+    border-radius: 50%;
+}
+
+.emptyList {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+.emptyList img {
+    margin-bottom: 1rem;
+}
+
+.item {
+    background: var(--gray-500);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4.5rem;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+    padding: 1rem 1rem 2rem 1rem;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+}
+
+.roundCheckbox {
+    appearance: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.125rem solid var(--blue);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    background-color: var(--gray-500);
+}
+
+.roundCheckbox:hover {
+    border: 0.125rem solid var(--blue-dark);
+}
+
+.roundCheckbox:checked {
+    background-color: var(--purple-dark);
+    border: none;
+}
+
+.roundCheckbox:checked:hover {
+    background-color: var(--purple);
+}
+
+.roundCheckbox:checked::before {
+    content: '✔';
+    color: var(--gray-100);
+    font-size: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.trash:hover {
+    color: var(--danger);
+}
