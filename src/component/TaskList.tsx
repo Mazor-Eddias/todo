@@ -1,60 +1,38 @@
 import styles from './TaskList.module.css';
 import clipboard from '../assets/Clipboard.svg';
 import { Trash } from "@phosphor-icons/react";
-import { ChangeEvent, useState, useEffect, useCallback } from "react";
-
-interface Task {
-    id: string;
-    text: string;
-}
+import { ChangeEvent, useState, useEffect } from "react";
 
 interface TaskListProps {
     taskCount: number;
-    taskList: Task[];
+    taskList: string[];
     doneList: string[];
     addDoneTask: (task: string) => void;
     deleteTask: (task: string) => void;
 }
 
-const useTaskState = (taskList: Task[]) => {
-    const [completedTasks, setCompletedTasks] = useState<boolean[]>(new Array(taskList.length).fill(false));
+export const TaskList = ({ taskCount, taskList, doneList, addDoneTask, deleteTask }: TaskListProps) => {
+    const [completedTasks, setCompletedTasks] = useState<boolean[]>([]);
 
     useEffect(() => {
-        setCompletedTasks((prev) => {
-            const updatedCompletedTasks = new Array(taskList.length).fill(false);
-            for (let i = 0; i < taskList.length; i++) {
-                if (prev[i]) {
-                    updatedCompletedTasks[i] = true;
-                }
-            }
-            return updatedCompletedTasks;
-        });
+        setCompletedTasks(new Array(taskList.length).fill(false));
     }, [taskList]);
 
-    return [completedTasks, setCompletedTasks] as const;
-};
+    const handleCheck = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+        const updatedCompletedTasks = [...completedTasks];
+        const isChecked = event.target.checked;
 
-export const TaskList = ({ taskCount, taskList, doneList, addDoneTask, deleteTask }: TaskListProps) => {
-    const [completedTasks, setCompletedTasks] = useTaskState(taskList);
+        updatedCompletedTasks[index] = isChecked;
+        setCompletedTasks(updatedCompletedTasks);
 
-    const handleCheck = useCallback((index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-        setCompletedTasks((prev) => {
-            const updatedCompletedTasks = [...prev];
-            const isChecked = event.target.checked;
+        if (isChecked && !doneList.includes(taskList[index])) {
+            addDoneTask(taskList[index]);
+        }
+    };
 
-            updatedCompletedTasks[index] = isChecked;
-
-            if (isChecked && !doneList.includes(taskList[index].id)) {
-                addDoneTask(taskList[index].id);
-            }
-
-            return updatedCompletedTasks;
-        });
-    }, [addDoneTask, doneList, taskList]);
-
-    const handleDelete = useCallback((taskId: string) => () => {
-        deleteTask(taskId);
-    }, [deleteTask]);
+    const handleDelete = (task: string) => () => {
+        deleteTask(task);
+    };
 
     const completedCount = completedTasks.filter(Boolean).length;
 
@@ -72,26 +50,23 @@ export const TaskList = ({ taskCount, taskList, doneList, addDoneTask, deleteTas
                 </div>
             ) : (
                 taskList.map((task, index) => (
-                    <div className={styles.item} key={task.id}>
+                    <div className={styles.item} key={index}>
                         <div className={styles.check}>
                             <input
                                 type="checkbox"
-                                name={`task-${task.id}`}
-                                id={`task-${task.id}`}
+                                name={`task-${index}`}
+                                id={`task-${index}`}
                                 className={styles.roundCheckbox}
-                                checked={completedTasks[index] || false}
+                                checked={completedTasks[index]}
                                 onChange={handleCheck(index)}
                             />
                         </div>
                         <div className={styles.content}>
-                            {completedTasks[index] ? <s>{task.text}</s> : <p>{task.text}</p>}
+                            {completedTasks[index] ? <s>{task}</s> : <p>{task}</p>}
                         </div>
-                        <button
-                            className={styles.delete}
-                            onClick={handleDelete(task.id)}
-                        >
+                        <div className={styles.delete} onClick={handleDelete(task)}>
                             <Trash size={18} className={styles.trash} />
-                        </button>
+                        </div>
                     </div>
                 ))
             )}
